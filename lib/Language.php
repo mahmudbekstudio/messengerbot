@@ -43,7 +43,11 @@ class Language {
 			self::$error = 'File: ' . $e->getFile() . '<br />Class: ' . __CLASS__ . '<br />Error Code: ' . $e->getCode() . '<br />Error Message: ' . $e->getMessage();
 		}
 
-		self::setPath(dirname(__FILE__) . '/languages');
+		if(defined('LANGUAGE_PATH')) {
+			self::setPath(LANGUAGE_PATH);
+		} else {
+			self::setPath(dirname(__FILE__) . '/languages');
+		}
 	}
 
 	/**

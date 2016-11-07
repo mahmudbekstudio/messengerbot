@@ -5,8 +5,16 @@ class WebMessenger extends Messenger {
 		parent::__construct($params);
 	}
 
-	public static function getParams() {
+	public static function getRequest() {
 		return array('get' => $_GET, 'post' => $_POST, 'files' => $_FILES);
+	}
+
+	public function userId() {
+		return $this->request['get']['userId'];
+	}
+
+	public function generateParams($request) {
+		//
 	}
 
 	public function render($result) {

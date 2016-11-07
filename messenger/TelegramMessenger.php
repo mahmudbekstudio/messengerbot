@@ -5,7 +5,7 @@ class TelegramMessenger extends Messenger {
 		parent::__construct($params);
 	}
 
-	public static function getParams() {
+	public static function getRequest() {
 		$content = file_get_contents("php://input");
 		$update = json_decode($content, true);
 
@@ -14,6 +14,14 @@ class TelegramMessenger extends Messenger {
 		}
 
 		return $update;
+	}
+
+	public function userId() {
+		return 0;
+	}
+
+	public function generateParams($request) {
+		//
 	}
 
 	public function render($result) {

@@ -4,13 +4,29 @@ class Application extends Instance {
 	private static $vars;
 	private static $config;
 	private static $model;
+	private static $command;
+	private static $navigation;
 
 	private function __construct() {
 		//
 	}
 
-	public static function run() {
-		//
+	public static function run($config) {
+		self::init($config);
+
+		$messenger = self::get('messenger');
+		$userId = $messenger->userId();
+		$user = self::getUser($userId);
+		$userParams = json_decode($user['additional_params']);
+
+		Language::setLang($userParams->language);
+		$userCurrentNavigation = self::getCurrentNavigation(json_decode($user['user_action']));
+
+		$command = $userCurrentNavigation['command'];
+		$commandInstance = self::getCommand($command, $userCurrentNavigation, $messenger->getParams());
+		$commandResult = $commandInstance->run();
+
+		$messenger->render($commandResult);
 	}
 
 	public static function init($config) {
@@ -23,11 +39,78 @@ class Application extends Instance {
 
 		$messenger = self::getConfig('messenger') . 'Messenger';
 		include MESSENGER_PATH . '/' . $messenger . '.php';
-		self::set('messenger', new $messenger($messenger::getParams()));
+		self::set('messenger', new $messenger($messenger::getRequest()));
+	}
+
+	public static function getNavigation() {
+		if(isset(self::$navigation)) {
+			return self::$navigation;
+		}
+
+		self::$navigation = include BASE_PATH . "/navigation.php";
+
+		return self::$navigation;
+	}
+
+	public static function getCurrentNavigation($userActionRoute, $navigation = false) {
+		$navigation = ($navigation === false) ? self::getNavigation() : $navigation;
+		$result = array();
+
+		if(!empty($userActionRoute)) {
+			$firstAction = array_shift($userActionRoute);
+			if(isset($navigation['children'][$firstAction->command])) {
+				if(isset($navigation['command']) && !isset($navigation['children'][$firstAction->command]['command'])) {
+					$navigation['children'][$firstAction->command]['command'] = $navigation['command'];
+				}
+
+				if(isset($navigation['childrenAction'])) {
+					if(!isset($navigation['children'][$firstAction->command]['childrenAction'])) {
+						$navigation['children'][$firstAction->command]['childrenAction'] = array();
+					}
+
+					$navigation['children'][$firstAction->command]['childrenAction'] = array_merge($navigation['childrenAction'], $navigation['children'][$firstAction->command]['childrenAction']);
+				}
+
+				$result = self::getCurrentNavigation($userActionRoute, $navigation['children'][$firstAction->command]);
+			}
+		}
+
+		if(empty($result)) {
+			$result = $navigation;
+		}
+
+		return $result;
+	}
+
+	public static function getUser($userId) {
+		$user = self::getModel('User');
+		$messenger = self::getConfig('messenger');
+		return $user->getUser($userId, $messenger);
+	}
+
+	public static function setCommand($commandName, $commandInstance) {
+		self::$command[$commandName] = $commandInstance;
+	}
+
+	public static function getCommand($command, $userCurrentNavigation, $messengerParams) {
+	    if(isset(self::$command[$command])) {
+		    return self::$command[$command];
+	    }
+
+		$commandClass = $command . 'Command';
+		$commandPath = COMMAND_PATH . '/' . $commandClass . '.php';
+		if(file_exists($commandPath)) {
+			include $commandPath;
+			$commandInstance = new $commandClass($userCurrentNavigation, $messengerParams);
+			self::setCommand($commandClass, $commandInstance);
+			return $commandInstance;
+		}
+
+		return false;
 	}
 
 	protected static function setModel($name, $model) {
-		self::$model[$model] = $model;
+		self::$model[$name] = $model;
 	}
 
 	public static function getModel($model) {

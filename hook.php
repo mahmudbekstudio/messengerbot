@@ -1,4 +1,9 @@
 <?php
+/*$arr = array(
+	array('command' => 'test', 'params' => array('a' => 1, 'b' => 2)),
+	array('command' => 'asd')
+);
+echo json_encode($arr);exit;*/
 define('BASE_PATH', dirname(__FILE__));
 define('LIB_PATH', BASE_PATH . '/lib');
 define('COMMAND_PATH', BASE_PATH . '/command');
@@ -16,4 +21,4 @@ require_once LIB_PATH . '/Model.php';
 
 $config = require_once BASE_PATH . '/config.php';
 
-Application::init($config);
+Application::run($config);

@@ -1,25 +1,5 @@
 <?php
 return array(
-	'navigation' => array(
-		'command' => 'Start',//
-		'childrenAction' => array(
-			Language::__('Back') => array('toTop' => true),
-		),
-		'children' => array(
-			Language::__('Search') => array(
-				'command' => 'Search',
-				/*'childrenAction' => array(
-					//Language::__('Search Text') => array('toTop' => true),
-				),
-				'children' => array(),*/
-			),
-			Language::__('Add') => array(
-				//
-			),
-			Language::__('Settings') => array(),
-			Language::__('Contacts') =>array(),
-		)
-	),
 	'language' => array(
 		'language' => 'en',
 		'enabled_languages' => array('en', 'ru', 'uz'),
@@ -27,10 +7,10 @@ return array(
 	),
 	'db' => array(
 		'host'=> 'localhost',
-		'db' => 'telegram',
+		'db' => 'messenger',
 		'user' => 'root',
 		'pass' => '',
-		'prefix' => 'telegram_',
+		'prefix' => 'msgr_',
 		'charset' => 'utf8'
 	),
 	'params' => array(

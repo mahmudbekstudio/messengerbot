@@ -1,13 +1,13 @@
 <?php
 class Command extends Instance {
 	protected $config;
-	protected $text;
+	protected $params;
 	protected $keyBoard;
 	private $result;
 
-	public function __construct($config, $text) {
+	public function __construct($config, $params) {
 		$this->config = $config;
-		$this->text = $text;
+		$this->params = $params;
 		$this->keyBoard = false;
 	}
 
