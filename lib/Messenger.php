@@ -3,10 +3,13 @@ abstract class Messenger extends Instance {
 
 	protected $request;
 	protected $params;
+	public $text;
+	public $commandPrefix = '';
 
 	public function __construct($request) {
 		$this->request = $request;
 		$this->params = false;
+		$this->text = $this->getText();
 	}
 
 	public static function getRequest() {
@@ -26,5 +29,25 @@ abstract class Messenger extends Instance {
 	abstract public function generateParams($request);
 
 	abstract public function render($result);
+
+	public function isCommand() {
+		return substr($this->text, 0, strlen($this->commandPrefix)) == $this->commandPrefix;
+	}
+
+	public function getCommand() {
+		$result = $this->text;
+
+		if($this->isCommand()) {
+			$result = substr($result, strlen($this->commandPrefix));
+		}
+
+		return $result;
+	}
+
+	public function createCommand($text) {
+		return $this->commandPrefix . $text;
+	}
+
+	abstract public function getText();
 
 }

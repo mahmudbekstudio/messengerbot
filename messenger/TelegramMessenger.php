@@ -3,6 +3,7 @@ class TelegramMessenger extends Messenger {
 
 	public function __construct($params) {
 		parent::__construct($params);
+		$this->commandPrefix = '>';
 	}
 
 	public static function getRequest() {
@@ -26,5 +27,9 @@ class TelegramMessenger extends Messenger {
 
 	public function render($result) {
 		//
+	}
+
+	public function getText() {
+		// TODO: Implement getText() method.
 	}
 }

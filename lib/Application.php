@@ -20,7 +20,8 @@ class Application extends Instance {
 		$userParams = json_decode($user['additional_params']);
 
 		Language::setLang($userParams->language);
-		$userCurrentNavigation = self::getCurrentNavigation(json_decode($user['user_action']));
+		$userAction = self::getUserAction($user['user_action'], $messenger);
+		$userCurrentNavigation = self::getCurrentNavigation($userAction);
 
 		$command = $userCurrentNavigation['command'];
 		$commandInstance = self::getCommand($command, $userCurrentNavigation, $messenger->getParams());
@@ -50,6 +51,18 @@ class Application extends Instance {
 		self::$navigation = include BASE_PATH . "/navigation.php";
 
 		return self::$navigation;
+	}
+
+	public static function getUserAction($userAction, $messenger) {
+		$userAction = json_decode($userAction);
+
+		if($messenger->isCommand()) {
+			$std = new stdClass();
+			$std->command = $messenger->getCommand();
+			$userAction[] = $std;
+		}
+
+		return $userAction;
 	}
 
 	public static function getCurrentNavigation($userActionRoute, $navigation = false) {
