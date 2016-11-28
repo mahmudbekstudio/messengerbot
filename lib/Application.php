@@ -25,7 +25,13 @@ class Application extends Instance {
 
 		$command = $userCurrentNavigation['command'];
 		$commandInstance = self::getCommand($command, $userCurrentNavigation, $messenger->getParams());
-		$commandResult = $commandInstance->run();
+
+		if(self::actionExist($userCurrentNavigation, $messenger->command)) {
+			$commandResult = $commandInstance->run();
+		} else {
+			$commandInstance->notFound(Language::__('Action Not Found'));
+			$commandResult = $commandInstance->getResult();
+		}
 
 		$messenger->render($commandResult);
 	}
@@ -156,6 +162,10 @@ class Application extends Instance {
 
 	public static function get($var) {
 		return isset(self::$vars[$var]) ? self::$vars[$var] : false;
+	}
+
+	public static function actionExist($navigation, $command) {
+		return $command == '' || isset($navigation['chidlren'][$command]) || isset($navigation['childrenAction'][$command]);
 	}
 
 }

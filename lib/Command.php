@@ -59,7 +59,7 @@ class Command extends Instance {
 		$this->addFile($file, 'image');
 	}
 
-	protected function getResult() {
+	public function getResult() {
 		//TODO: generate result for show in messenger
 		return $this->result;
 	}
