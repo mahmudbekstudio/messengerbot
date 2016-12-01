@@ -2,31 +2,35 @@
 return array(
 	'command' => 'Start',//
 	'childrenAction' => array(
-		Language::__('Back') => array('toTop' => true),
+		'Back' => array('toTop' => true),
 	),
 	'children' => array(
-		Language::__('Category') => array(
+		'Category' => array(
 			'command' => 'Category',
 
 		),
-		Language::__('Search') => array(
+		'Search' => array(
 			'command' => 'Search',
 			/*'childrenAction' => array(
-				//Language::__('Search Text') => array('toTop' => true),
+				//'Search Text' => array('toTop' => true),
 			),
 			'children' => array(),*/
 		),
-		Language::__('Add') => array(
+		'Add' => array(
 			//
 		),
-		Language::__('Settings') => array(),
-		Language::__('Contacts') =>array(),
+		'Settings' => array(),
+		'Contacts' =>array(),
 		'test' => array(
 			'children' => array(
 				'test1' => array(),
 				'test2' => array(
-					'chidlren' => array(
-						'test21' => array(),
+					'children' => array(
+						'test21' => array(
+							'children' => array(
+								'aaa' => array()
+							)
+						),
 						'test22' => array(),
 					)
 				),

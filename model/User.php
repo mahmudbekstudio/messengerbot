@@ -14,4 +14,8 @@ class User extends Model {
 		return $list[0];
 	}
 
+	public function saveUserAction($userId, $userAction) {
+		$this->update(array('user_action' => $userAction), "`user_id`='" . $userId . "'");
+	}
+
 }

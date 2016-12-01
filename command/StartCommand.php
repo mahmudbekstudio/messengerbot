@@ -1,8 +1,8 @@
 <?php
 class StartCommand extends Command {
 
-	public function __construct($config, $params) {
-		parent::__construct($config, $params);
+	public function __construct($navigation, $config, $params) {
+		parent::__construct($navigation, $config, $params);
 	}
 
 	public function run() {

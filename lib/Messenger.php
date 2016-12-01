@@ -5,12 +5,16 @@ abstract class Messenger extends Instance {
 	protected $params;
 	public $text;
 	public $command;
-	public $commandPrefix = '';
+	public $commandPrefix;
 
 	public function __construct($request) {
+		$this->commandPrefix = '';
 		$this->request = $request;
 		$this->params = false;
 		$this->text = $this->getText();
+	}
+
+	public function init() {
 		$this->command = $this->isCommand() ? $this->getCommand() : '';
 	}
 

@@ -26,13 +26,9 @@ class Application extends Instance {
 		$command = $userCurrentNavigation['command'];
 		$commandInstance = self::getCommand($command, $userCurrentNavigation, $messenger->getParams());
 
-		if(self::actionExist($userCurrentNavigation, $messenger->command)) {
-			$commandResult = $commandInstance->run();
-		} else {
-			$commandInstance->notFound(Language::__('Action Not Found'));
-			$commandResult = $commandInstance->getResult();
-		}
+		$commandResult = $commandInstance->run();
 
+		print_r($commandResult);
 		$messenger->render($commandResult);
 	}
 
@@ -104,7 +100,11 @@ class Application extends Instance {
 	public static function getUser($userId) {
 		$user = self::getModel('User');
 		$messenger = self::getConfig('messenger');
-		return $user->getUser($userId, $messenger);
+		$user = $user->getUser($userId, $messenger);
+
+		self::set('user', $user);
+
+		return $user;
 	}
 
 	public static function setCommand($commandName, $commandInstance) {
@@ -120,7 +120,7 @@ class Application extends Instance {
 		$commandPath = COMMAND_PATH . '/' . $commandClass . '.php';
 		if(file_exists($commandPath)) {
 			include $commandPath;
-			$commandInstance = new $commandClass($userCurrentNavigation, $messengerParams);
+			$commandInstance = new $commandClass(self::getNavigation(), $userCurrentNavigation, $messengerParams);
 			self::setCommand($commandClass, $commandInstance);
 			return $commandInstance;
 		}
@@ -162,10 +162,6 @@ class Application extends Instance {
 
 	public static function get($var) {
 		return isset(self::$vars[$var]) ? self::$vars[$var] : false;
-	}
-
-	public static function actionExist($navigation, $command) {
-		return $command == '' || isset($navigation['chidlren'][$command]) || isset($navigation['childrenAction'][$command]);
 	}
 
 }
